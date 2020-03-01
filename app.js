@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const hemlet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 
 const { limiter } = require('./utils/limiter');
 
@@ -28,6 +29,21 @@ app.use(mongoSanitize());
 
 // Data sanitization against XSS.
 app.use(xss());
+
+// Provent param polution
+// removes duclicate query string params.
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  }),
+);
 
 // Limit requests for a single IP on all API routes.
 app.use('/api', limiter);
