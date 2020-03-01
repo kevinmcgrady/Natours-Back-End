@@ -11,6 +11,33 @@ const signToken = userId => {
   });
 };
 
+const createSendToken = (user, statusCode, res) => {
+  // Create token.
+  const token = signToken(user._id);
+
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+  res.cookie('jwt', token, cookieOptions);
+
+  // hide the password when user is returned to the client.
+  user.password = undefined;
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      user: user,
+    },
+  });
+};
+
 module.exports.signup = catchAsync(async (req, res, next) => {
   // Create new user.
   const newUser = await User.create({
@@ -22,16 +49,7 @@ module.exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
 
-  // Create token.
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createSendToken(newUser, 201, res);
 });
 
 module.exports.login = catchAsync(async (req, res, next) => {
@@ -51,12 +69,7 @@ module.exports.login = catchAsync(async (req, res, next) => {
   }
 
   // send token to client.
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 module.exports.forgotPassword = catchAsync(async (req, res, next) => {
@@ -126,13 +139,7 @@ module.exports.resetPassword = catchAsync(async (req, res, next) => {
   // save the user.
   await user.save();
 
-  // log the user in.
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 module.exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -150,11 +157,5 @@ module.exports.updatePassword = catchAsync(async (req, res, next) => {
 
   await user.save();
   // log the user in
-
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
