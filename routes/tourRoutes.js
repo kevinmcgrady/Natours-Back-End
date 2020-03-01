@@ -1,7 +1,7 @@
 const express = require('express');
 const tourControllers = require('../controllers/toursController');
 const router = express.Router();
-const { checkAuth } = require('../middleware/authMiddleware');
+const { checkAuth, restrictTo } = require('../middleware/authMiddleware');
 const { aliasTopTours } = require('../middleware/tourMiddleware');
 
 router.route('/top-5-tours').get(aliasTopTours, tourControllers.getAllTours);
@@ -13,12 +13,24 @@ router.route('/monthly-plan/:year').get(tourControllers.getMonthlyPlan);
 router
   .route('/')
   .get(checkAuth, tourControllers.getAllTours)
-  .post(tourControllers.createTour);
+  .post(
+    checkAuth,
+    restrictTo('admin', 'lead-guide'),
+    tourControllers.createTour,
+  );
 
 router
   .route('/:id')
-  .get(tourControllers.getTour)
-  .patch(tourControllers.updateTour)
-  .delete(tourControllers.deleteTour);
+  .get(checkAuth, tourControllers.getTour)
+  .patch(
+    checkAuth,
+    restrictTo('admin', 'lead-guide'),
+    tourControllers.updateTour,
+  )
+  .delete(
+    checkAuth,
+    restrictTo('admin', 'lead-guide'),
+    tourControllers.deleteTour,
+  );
 
 module.exports = router;

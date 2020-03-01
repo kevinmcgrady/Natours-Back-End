@@ -45,3 +45,14 @@ module.exports.checkAuth = catchAsync(async (req, res, next) => {
   // all good, on to the protected route
   next();
 });
+
+module.exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to preform this action', 403),
+      );
+    }
+    next();
+  };
+};
