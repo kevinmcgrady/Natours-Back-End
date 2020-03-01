@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const { limiter } = require('./utils/limiter');
+
 const { errorHandeler } = require('./middleware/errorMiddleware');
 const AppError = require('./error/appError');
 
@@ -12,6 +14,8 @@ const app = express();
 
 // Middleware.
 app.use(express.json());
+
+app.use('/api', limiter);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
