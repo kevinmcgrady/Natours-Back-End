@@ -13,6 +13,7 @@ const AppError = require('./error/appError');
 // Route imports.
 const userRouter = require('./routes/userRoutes');
 const tourRouter = require('./routes/tourRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 // App.
 const app = express();
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 // Routes.
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // Error route.
 app.all('*', (req, res, next) => {
