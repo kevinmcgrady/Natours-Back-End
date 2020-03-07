@@ -146,4 +146,11 @@ tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
 
+// Virtual populate -- this way we do not hold an array of review ids on the tour model.
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
 module.exports = mongoose.model('Tour', tourSchema);
