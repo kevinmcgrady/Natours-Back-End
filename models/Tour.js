@@ -99,6 +99,12 @@ const tourSchema = new Schema(
         day: Number,
       },
     ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -109,6 +115,15 @@ const tourSchema = new Schema(
 // Add slug to tour on save
 tourSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// Populate the users from the user ids on each tour.
+tourSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 
