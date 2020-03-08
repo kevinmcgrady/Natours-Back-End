@@ -1,21 +1,15 @@
 const Review = require('../models/Review');
-const { catchAsync } = require('../middleware/errorMiddleware');
-const { deleteOne, updateOne, createOne } = require('./handlerFactory');
+const {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} = require('./handlerFactory');
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
-  let filter;
-  if (req.params.tourId) filter = { tour: req.params.tourId };
+exports.getAllReviews = getAll(Review);
 
-  const reviews = await Review.find(filter);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      results: reviews.length,
-      reviews,
-    },
-  });
-});
+exports.getReview = getOne(Review);
 
 exports.createReview = createOne(Review);
 

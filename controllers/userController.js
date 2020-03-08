@@ -1,30 +1,16 @@
 const User = require('../models/User');
 const { catchAsync } = require('../middleware/errorMiddleware');
 const AppError = require('../error/appError');
-const { deleteOne, updateOne } = require('./handlerFactory');
+const { deleteOne, updateOne, getOne, getAll } = require('./handlerFactory');
+const { filterUserData } = require('../utils/filterUserData');
 
-const filterUserData = (req, ...allowedFields) => {
-  const newReq = {};
+exports.getAllUsers = getAll(User);
 
-  Object.keys(req).forEach(key => {
-    if (allowedFields.includes(key)) {
-      newReq[key] = req[key];
-    }
-  });
+exports.getUser = getOne(User);
 
-  return newReq;
-};
+exports.updateUser = updateOne(User);
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      users,
-    },
-  });
-});
+exports.deleteUser = deleteOne(User);
 
 exports.updateCurrentUser = catchAsync(async (req, res, next) => {
   // create error if user posts password data.
@@ -61,19 +47,3 @@ exports.deleteCurrentUser = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
-exports.getUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not yet defined' });
-};
-
-exports.createUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not yet defined' });
-};
-
-exports.updateUser = updateOne(User);
-
-exports.deleteUser = deleteOne(User);
