@@ -4,27 +4,34 @@ const authController = require('../controllers/authController');
 const {
   checkAuth,
   setLoggedInUserId,
+  restrictTo,
 } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+// Auth routes.
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
+// User routes, password related.
 router.post('/forgot-password', authController.forgotPassword);
 router.patch('/reset-password/:token', authController.resetPassword);
 router.patch('/update-password', checkAuth, authController.updatePassword);
 
+// User routes.
 router.get('/me', checkAuth, setLoggedInUserId, userController.getMe);
 router.patch('/update-me', checkAuth, userController.updateCurrentUser);
 router.delete('/delete-me', checkAuth, userController.deleteCurrentUser);
 
-router.route('/').get(userController.getAllUsers);
+// Admin routes.
+router
+  .route('/')
+  .get(checkAuth, restrictTo('admin'), userController.getAllUsers);
 
 router
   .route('/:id')
-  .get(userController.getUser)
-  .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+  .get(checkAuth, restrictTo('admin'), userController.getUser)
+  .patch(checkAuth, restrictTo('admin'), userController.updateUser)
+  .delete(checkAuth, restrictTo('admin'), userController.deleteUser);
 
 module.exports = router;

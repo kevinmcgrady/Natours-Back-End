@@ -9,14 +9,20 @@ router.route('/top-5-tours').get(aliasTopTours, tourControllers.getAllTours);
 
 router.route('/tour-stats').get(tourControllers.getTourStats);
 
-router.route('/monthly-plan/:year').get(tourControllers.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(
+    checkAuth,
+    restrictTo('admin', 'lead-guide', 'guide'),
+    tourControllers.getMonthlyPlan,
+  );
 
 // Nested route to create a review on a tour
 router.use('/:tourId/reviews', reviewRouter);
 
 router
   .route('/')
-  .get(checkAuth, tourControllers.getAllTours)
+  .get(tourControllers.getAllTours)
   .post(
     checkAuth,
     restrictTo('admin', 'lead-guide'),
@@ -25,7 +31,7 @@ router
 
 router
   .route('/:id')
-  .get(checkAuth, tourControllers.getTour)
+  .get(tourControllers.getTour)
   .patch(
     checkAuth,
     restrictTo('admin', 'lead-guide'),
