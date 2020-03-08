@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { catchAsync } = require('../middleware/errorMiddleware');
 const AppError = require('../error/appError');
+const { deleteOne } = require('./handlerFactory');
 
 const filterUserData = (req, ...allowedFields) => {
   const newReq = {};
@@ -79,8 +80,4 @@ exports.updateUser = (req, res) => {
     .json({ status: 'error', message: 'This route is not yet defined' });
 };
 
-exports.deleteUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not yet defined' });
-};
+exports.deleteUser = deleteOne(User);
