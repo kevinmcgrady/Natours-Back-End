@@ -12,6 +12,8 @@ exports.updateUser = updateOne(User);
 
 exports.deleteUser = deleteOne(User);
 
+exports.getMe = getOne(User);
+
 exports.updateCurrentUser = catchAsync(async (req, res, next) => {
   // create error if user posts password data.
   if (req.body.password || req.body.passwordConfirm) {

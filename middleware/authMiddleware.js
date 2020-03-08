@@ -56,3 +56,8 @@ module.exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+module.exports.setLoggedInUserId = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
