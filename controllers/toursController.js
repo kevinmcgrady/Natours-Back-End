@@ -2,7 +2,7 @@ const Tour = require('../models/Tour');
 const APIFeatures = require('../utils/APIFeatures');
 const { catchAsync } = require('../middleware/errorMiddleware');
 const AppError = require('../error/appError');
-const { deleteOne } = require('./handlerFactory');
+const { deleteOne, updateOne, createOne } = require('./handlerFactory');
 
 exports.getAllTours = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Tour.find(), req.query)
@@ -40,39 +40,9 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
+exports.createTour = createOne(Tour);
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const id = req.params.id;
-  const tour = req.body;
-
-  const updatedTour = await Tour.findByIdAndUpdate(id, tour, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!updatedTour) {
-    return next(new AppError('No tour found with that ID.', 404));
-  }
-
-  await updatedTour.save();
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: updatedTour,
-    },
-  });
-});
+exports.updateTour = updateOne(Tour);
 
 exports.deleteTour = deleteOne(Tour);
 

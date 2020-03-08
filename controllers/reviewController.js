@@ -1,6 +1,6 @@
 const Review = require('../models/Review');
 const { catchAsync } = require('../middleware/errorMiddleware');
-const { deleteOne } = require('./handlerFactory');
+const { deleteOne, updateOne, createOne } = require('./handlerFactory');
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
   let filter;
@@ -17,25 +17,8 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createReview = catchAsync(async (req, res, next) => {
-  if (!req.body.tour) req.body.tour = req.params.tourId;
-  if (!req.body.user) req.body.user = req.user.id;
+exports.createReview = createOne(Review);
 
-  const reviewRequestData = {
-    review: req.body.review,
-    rating: parseInt(req.body.rating),
-    tour: req.body.tour,
-    user: req.user.id,
-  };
-
-  const review = await Review.create(reviewRequestData);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      review,
-    },
-  });
-});
+exports.updateReview = updateOne(Review);
 
 exports.deleteReview = deleteOne(Review);
