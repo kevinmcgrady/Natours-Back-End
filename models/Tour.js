@@ -116,7 +116,7 @@ const tourSchema = new Schema(
 // indexes
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
-
+tourSchema.index({ startLocation: '2dsphere' });
 // Add slug to tour on save
 tourSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });

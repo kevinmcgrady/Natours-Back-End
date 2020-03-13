@@ -96,9 +96,7 @@ userSchema.methods.createPasswordResetToken = function() {
     .digest('hex');
 
   // store the expire time for the reset token -- 10 mins.
-
   this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000;
-  console.log({ resetToken }, this.passwordResetToken);
   // Return the plane token to send in the email.
   return resetToken;
 };

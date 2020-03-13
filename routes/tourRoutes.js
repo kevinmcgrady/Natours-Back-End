@@ -5,10 +5,18 @@ const router = express.Router();
 const { checkAuth, restrictTo } = require('../middleware/authMiddleware');
 const { aliasTopTours } = require('../middleware/tourMiddleware');
 
+// tours within a giver distance
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourControllers.getToursWithin);
+
+// top 5 tours.
 router.route('/top-5-tours').get(aliasTopTours, tourControllers.getAllTours);
 
+// tour stats
 router.route('/tour-stats').get(tourControllers.getTourStats);
 
+// tour monthly plan
 router
   .route('/monthly-plan/:year')
   .get(
