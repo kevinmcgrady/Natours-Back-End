@@ -138,14 +138,6 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
-// Do not show VIP tours for aggregate queries
-tourSchema.pre('aggregate', function(next) {
-  this.pipeline().unshift({
-    $match: { secretTour: { $ne: true } },
-  });
-  next();
-});
-
 // Vitrual prop
 tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;

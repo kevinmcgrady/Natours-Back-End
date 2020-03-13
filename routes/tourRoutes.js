@@ -10,6 +10,9 @@ router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(tourControllers.getToursWithin);
 
+// route to calculate distance
+router.route('/distances/:latlng/unit/:unit').get(tourControllers.getDistances);
+
 // top 5 tours.
 router.route('/top-5-tours').get(aliasTopTours, tourControllers.getAllTours);
 
