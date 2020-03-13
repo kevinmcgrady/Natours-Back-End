@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Tour = require('./Tour');
 
 const reviewSchema = new Schema(
   {
@@ -40,6 +41,50 @@ reviewSchema.pre(/^find/, function(next) {
     select: 'name photo',
   });
   next();
+});
+
+// Method to calc the averagr rating for a tour.
+// after created.
+reviewSchema.statics.calcAverageRatings = async function(tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRatings: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRatings,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
+
+// before update and delete
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+  this.r = await this.findOne();
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+  await this.r.constructor.calcAverageRatings(this.r.tour);
+});
+
+// after save
+reviewSchema.post('save', function() {
+  this.constructor.calcAverageRatings(this.tour);
 });
 
 module.exports = mongoose.model('Review', reviewSchema);
