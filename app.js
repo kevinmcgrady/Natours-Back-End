@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const hemlet = require('helmet');
+const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
@@ -21,6 +22,15 @@ const app = express();
 // Middleware.
 // Set security HTTP headers
 app.use(hemlet());
+
+// Template Engine
+app.set('view engine', 'pug');
+
+// Set where the views are located
+app.set('views', path.join(__dirname, 'views'));
+
+// Serving static files from public folder.
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Allow JSON body data into req.body and limit to 10kb
 app.use(express.json({ limit: '10kb' }));
@@ -54,15 +64,33 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Serving static files from public folder.
-app.use(express.static(`${__dirname}/public`));
-
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
 
 // Routes.
+// View routes.
+app.get('/', (req, res, next) => {
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'John',
+  });
+});
+
+app.get('/overview', (req, res, next) => {
+  res.status(200).render('overview', {
+    title: 'All Tours',
+  });
+});
+
+app.get('/tour', (req, res, next) => {
+  res.status(200).render('tour', {
+    title: 'The Forest Hiker',
+  });
+});
+
+// API routes.
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
