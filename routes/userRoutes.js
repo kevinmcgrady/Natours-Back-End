@@ -12,6 +12,7 @@ const router = express.Router();
 // Auth routes.
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.get('/logout', authController.logout);
 
 // User routes, password related.
 router.post('/forgot-password', authController.forgotPassword);

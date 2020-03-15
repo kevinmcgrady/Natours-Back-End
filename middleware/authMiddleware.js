@@ -65,29 +65,33 @@ module.exports.setLoggedInUserId = (req, res, next) => {
 };
 
 // Check if the user is logged in.
-module.exports.isLoggedIn = catchAsync(async (req, res, next) => {
+module.exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
-    // validate token.
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET,
-    );
+    try {
+      // validate token.
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET,
+      );
 
-    // check if user exists.
-    const freshUser = await User.findById(decoded.id);
+      // check if user exists.
+      const freshUser = await User.findById(decoded.id);
 
-    // If the user was deleted after the token was generated.
-    if (!freshUser) {
+      // If the user was deleted after the token was generated.
+      if (!freshUser) {
+        return next();
+      }
+
+      // check if user changed password after token was issued.
+      if (freshUser.changedPasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      res.locals.user = freshUser;
+      return next();
+    } catch (error) {
       return next();
     }
-
-    // check if user changed password after token was issued.
-    if (freshUser.changedPasswordAfter(decoded.iat)) {
-      return next();
-    }
-
-    res.locals.user = freshUser;
-    return next();
   }
   next();
-});
+};
