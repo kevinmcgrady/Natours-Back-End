@@ -1,21 +1,30 @@
 import axios from 'axios';
 import { showAlert } from './alerts';
 
-export const updateAccountDetails = async (name, email) => {
+const submitButton = document.querySelector('.form-user-data .btn--green');
+const passwordSubmitButton = document.querySelector(
+  '.form-user-settings .btn--green',
+);
+
+const spinner = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+
+export const updateAccountDetails = async (data, type) => {
+  const button = type === 'password' ? passwordSubmitButton : submitButton;
   try {
+    const url = type === 'password' ? 'update-password' : 'update-me';
+    button.innerHTML = spinner;
     const res = await axios({
       method: 'PATCH',
-      url: 'http://127.0.0.1:8000/api/v1/users/update-me',
-      data: {
-        name,
-        email,
-      },
+      url: `http://127.0.0.1:8000/api/v1/users/${url}`,
+      data,
     });
+    button.innerHTML = 'Save settings';
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Account updated');
+      showAlert('success', `${type.toUpperCase()} updated`);
     }
   } catch (error) {
+    button.innerHTML = 'Save settings';
     showAlert('error', error.response.data.message);
   }
 };
