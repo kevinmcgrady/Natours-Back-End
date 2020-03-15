@@ -8453,7 +8453,7 @@ var logout = /*#__PURE__*/function () {
 
             if (res.data.status === 'success') {
               (0, _alerts.showAlert)('success', 'Logged out');
-              location.reload(true);
+              location.assign('/');
             }
 
             _context2.next = 10;

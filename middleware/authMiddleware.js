@@ -44,6 +44,7 @@ module.exports.checkAuth = catchAsync(async (req, res, next) => {
 
   // add user to req object
   req.user = freshUser;
+  res.locals.user = freshUser;
   // all good, on to the protected route
   next();
 });
