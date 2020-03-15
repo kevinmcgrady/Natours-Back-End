@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const { uploadUserPhoto } = require('../middleware/fileUpload');
 const {
   checkAuth,
   setLoggedInUserId,
@@ -21,7 +22,12 @@ router.patch('/update-password', checkAuth, authController.updatePassword);
 
 // User routes.
 router.get('/me', checkAuth, setLoggedInUserId, userController.getMe);
-router.patch('/update-me', checkAuth, userController.updateCurrentUser);
+router.patch(
+  '/update-me',
+  checkAuth,
+  uploadUserPhoto,
+  userController.updateCurrentUser,
+);
 router.delete('/delete-me', checkAuth, userController.deleteCurrentUser);
 
 // Admin routes.
