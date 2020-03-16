@@ -1,7 +1,10 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
-const { uploadUserPhoto } = require('../middleware/fileUpload');
+const {
+  uploadUserPhoto,
+  resizeUserPhoto,
+} = require('../middleware/fileUpload');
 const {
   checkAuth,
   setLoggedInUserId,
@@ -26,6 +29,7 @@ router.patch(
   '/update-me',
   checkAuth,
   uploadUserPhoto,
+  resizeUserPhoto,
   userController.updateCurrentUser,
 );
 router.delete('/delete-me', checkAuth, userController.deleteCurrentUser);
