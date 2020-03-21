@@ -33,10 +33,18 @@ if (logoutButton) {
 
 if (updateDetailsForm) {
   updateDetailsForm.addEventListener('submit', e => {
+    e.preventDefault();
+
     const email = document.getElementById('email').value;
     const name = document.getElementById('name').value;
-    e.preventDefault();
-    updateAccountDetails({ name, email }, 'details');
+    const photo = document.getElementById('photo').files[0];
+
+    const form = new FormData();
+    form.append('name', name);
+    form.append('email', email);
+    form.append('photo', photo);
+
+    updateAccountDetails(form, 'details');
   });
 }
 
