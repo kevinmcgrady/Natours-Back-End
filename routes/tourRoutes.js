@@ -4,6 +4,10 @@ const reviewRouter = require('../routes/reviewRoutes');
 const router = express.Router();
 const { checkAuth, restrictTo } = require('../middleware/authMiddleware');
 const { aliasTopTours } = require('../middleware/tourMiddleware');
+const {
+  uploadTourImages,
+  resizeTourImages,
+} = require('../middleware/fileUpload');
 
 // tours within a giver distance
 router
@@ -46,6 +50,8 @@ router
   .patch(
     checkAuth,
     restrictTo('admin', 'lead-guide'),
+    uploadTourImages,
+    resizeTourImages,
     tourControllers.updateTour,
   )
   .delete(
