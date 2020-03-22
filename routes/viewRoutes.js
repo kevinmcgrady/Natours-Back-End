@@ -12,4 +12,5 @@ router.get('/login', isLoggedIn, viewsController.login);
 
 router.get('/account', checkAuth, viewsController.getAccount);
 
+router.get('/my-tours', checkAuth, viewsController.getMyTours);
 module.exports = router;

@@ -4,6 +4,24 @@ const Booking = require('../models/Booking');
 const { catchAsync } = require('../middleware/errorMiddleware');
 const AppError = require('../error/appError');
 
+const {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} = require('./handlerFactory');
+
+module.exports.createBooking = createOne(Booking);
+
+module.exports.getBooking = getOne(Booking);
+
+module.exports.getAllBooking = getAll(Booking);
+
+module.exports.updateBooking = updateOne(Booking);
+
+module.exports.deleteBooking = deleteOne(Booking);
+
 module.exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourID);
 
