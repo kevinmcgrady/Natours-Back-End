@@ -20,6 +20,9 @@ const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
+// Controllers
+const bookingController = require('./controllers/bookingController');
+
 // App.
 const app = express();
 
@@ -42,6 +45,13 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Serving static files from public folder.
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Webhooks
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
 
 // Allow JSON body data into req.body and limit to 10kb
 app.use(express.json({ limit: '10kb' }));
