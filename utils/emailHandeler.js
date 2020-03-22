@@ -10,20 +10,26 @@ module.exports = class Email {
     this.from = `Kevin Mcgrady <${process.env.EMAIL_FROM}>`;
   }
 
-  createTransport() {
+  newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      return 1;
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_API_KEY,
+        },
+      });
     }
 
     // create transporter.
-    return (transporter = nodemailer.createTransport({
+    return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
-    }));
+    });
   }
 
   async send(template, subject) {
@@ -39,18 +45,22 @@ module.exports = class Email {
     const mailOptions = {
       from: this.from,
       to: this.to,
-      subject: this.subject,
+      subject,
       html,
       text: htmlToText.fromString(html),
     };
 
-    await this.createTransport().sendMail(mailOptions);
+    await this.newTransport().sendMail(mailOptions);
   }
 
   async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Natours Family');
+  }
+
+  async sendPasswordReset() {
     await this.send(
-      'welcome',
-      `Welcome to the Natours Family, ${this.firstName}`,
+      'passwordReset',
+      'Your password reset token (valid for only 10 mins)',
     );
   }
 };
