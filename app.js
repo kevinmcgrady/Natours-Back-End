@@ -21,6 +21,8 @@ const viewRouter = require('./routes/viewRoutes');
 // App.
 const app = express();
 
+app.enable('trust proxy');
+
 // Middleware.
 // Set security HTTP headers
 app.use(hemlet());

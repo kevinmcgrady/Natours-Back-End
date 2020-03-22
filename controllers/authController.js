@@ -11,7 +11,7 @@ const signToken = userId => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   // Create token.
   const token = signToken(user._id);
 
@@ -20,9 +20,8 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   };
-
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -54,7 +53,7 @@ module.exports.signup = catchAsync(async (req, res, next) => {
   // send welcome email.
   await new Email(newUser, url).sendWelcome();
 
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 module.exports.login = catchAsync(async (req, res, next) => {
@@ -74,7 +73,7 @@ module.exports.login = catchAsync(async (req, res, next) => {
   }
 
   // send token to client.
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 module.exports.logout = (req, res, next) => {
@@ -150,7 +149,7 @@ module.exports.resetPassword = catchAsync(async (req, res, next) => {
   // save the user.
   await user.save();
 
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 module.exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -168,5 +167,5 @@ module.exports.updatePassword = catchAsync(async (req, res, next) => {
 
   await user.save();
   // log the user in
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
