@@ -7,6 +7,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const { limiter } = require('./utils/limiter');
+const compression = require('compression');
 
 const { errorHandeler } = require('./middleware/errorMiddleware');
 const AppError = require('./error/appError');
@@ -57,6 +58,8 @@ app.use(
     ],
   }),
 );
+
+app.use(compression());
 
 // Limit requests for a single IP on all API routes.
 app.use('/api', limiter);

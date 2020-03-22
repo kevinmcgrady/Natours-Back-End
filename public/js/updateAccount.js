@@ -15,7 +15,7 @@ export const updateAccountDetails = async (data, type) => {
     button.innerHTML = spinner;
     const res = await axios({
       method: 'PATCH',
-      url: `http://127.0.0.1:8000/api/v1/users/${url}`,
+      url: `/api/v1/users/${url}`,
       data,
     });
     button.innerHTML = 'Save settings';

@@ -8,9 +8,7 @@ export const bookTour = async tourId => {
 
   try {
     button.innerHTML = spinner;
-    const session = await axios(
-      `http://127.0.0.1:8000/api/v1/bookings/checkout-session/${tourId}`,
-    );
+    const session = await axios(`/api/v1/bookings/checkout-session/${tourId}`);
 
     await stripe.redirectToCheckout({
       sessionId: session.data.session.id,
@@ -21,6 +19,4 @@ export const bookTour = async tourId => {
     button.innerHTML = 'BOOK TOUR NOW!';
     showAlert('error', 'error');
   }
-
-  console.log(session);
 };
