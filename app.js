@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const hemlet = require('helmet');
 const path = require('path');
+const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
@@ -18,12 +19,18 @@ const tourRouter = require('./routes/tourRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
+
 // App.
 const app = express();
 
+// Allow the app to trust proxys.
 app.enable('trust proxy');
 
 // Middleware.
+// Allow CORS.
+app.use(cors());
+app.options('*', cors());
+
 // Set security HTTP headers
 app.use(hemlet());
 
