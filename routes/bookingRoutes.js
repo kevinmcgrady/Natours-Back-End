@@ -4,9 +4,15 @@ const router = express.Router();
 const { checkAuth, restrictTo } = require('../middleware/authMiddleware');
 
 router.get(
-  '/checkout-session/:tourID',
+  '/create-payment/:tourId',
   checkAuth,
-  bookingController.getCheckoutSession,
+  bookingController.createPayment,
+);
+
+router.post(
+  '/create-booking-checkout',
+  checkAuth,
+  bookingController.createBookingCheckout,
 );
 
 // Restrict all routess below for only admin and lead-guides.
