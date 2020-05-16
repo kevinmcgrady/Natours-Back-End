@@ -24,3 +24,5 @@ Natours is a tour booking system, this API provides features:
 > API Docs can be found at: https://documenter.getpostman.com/view/3368772/SzS1U9C2?version=latest#103ba296-d5cb-4757-b6d0-737050609f3a
 
 > Start Application npm run start:dev | npm run start:prod
+
+> Pull requests will be checked in a pipeline
