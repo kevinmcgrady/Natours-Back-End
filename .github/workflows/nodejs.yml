@@ -24,5 +24,3 @@ jobs:
       run: npm ci
     - name: Checking Syntax
       run: npm run lint --if-present
-    - name: Testing
-      run: npm test --if-present
