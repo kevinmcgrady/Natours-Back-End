@@ -5,7 +5,7 @@ const AppError = require('../error/appError');
 const Email = require('../utils/emailHandeler');
 const crypto = require('crypto');
 
-const signToken = userId => {
+const signToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
@@ -102,9 +102,7 @@ module.exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   try {
     // send email to user.
-    const resetURL = `${req.protocol}://${req.get(
-      'host',
-    )}/api/v1/users/reset-password/${resetToken}`;
+    const resetURL = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
 
     await new Email(user, resetURL).sendPasswordReset();
   } catch (error) {
