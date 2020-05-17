@@ -3,7 +3,7 @@ const AppError = require('../error/appError');
 const APIFeatures = require('../utils/APIFeatures');
 
 // Factory function for deleting a  document.
-exports.deleteOne = Model =>
+exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const id = req.params.id;
     const doc = await Model.findByIdAndDelete(id);
@@ -19,7 +19,7 @@ exports.deleteOne = Model =>
   });
 
 // Facrory function to update a document.
-exports.updateOne = Model =>
+exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const id = req.params.id;
     const doc = req.body;
@@ -42,7 +42,7 @@ exports.updateOne = Model =>
   });
 
 // Factory function to create a document.
-exports.createOne = Model =>
+exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.create(req.body);
 
@@ -77,19 +77,26 @@ exports.getOne = (Model, populateOptions) =>
     });
   });
 
-exports.getAll = Model =>
+exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // To allow for nested GET reviews on tour.
     let filter;
     if (req.params.tourId) filter = { tour: req.params.tourId };
 
+    const allItems = await Model.find();
+
+    const totalItems = allItems.length;
+
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
       .limitFields()
-      .pagination();
+      .pagination()
+      .search();
 
     const doc = await features.query;
+
+    const totalPages = Math.round(totalItems / 6);
 
     res.status(200).json({
       status: 'success',
@@ -97,6 +104,7 @@ exports.getAll = Model =>
       results: doc.length,
       data: {
         data: doc,
+        totalPages,
       },
     });
   });
