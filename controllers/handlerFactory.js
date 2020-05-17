@@ -96,7 +96,13 @@ exports.getAll = (Model) =>
 
     const doc = await features.query;
 
-    const totalPages = Math.round(totalItems / 6);
+    let totalPages;
+
+    if (req.query.search) {
+      totalPages = Math.round(doc.length / 6);
+    } else {
+      totalPages = Math.round(totalItems / 6);
+    }
 
     res.status(200).json({
       status: 'success',

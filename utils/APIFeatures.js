@@ -2,6 +2,11 @@ class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
     this.queryString = queryString;
+    this.totalPages;
+  }
+
+  static totalPages() {
+    return this.totalPages;
   }
 
   filter() {
