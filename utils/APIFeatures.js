@@ -2,21 +2,37 @@ class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
     this.queryString = queryString;
+    this.totalPages;
+  }
+
+  static totalPages() {
+    return this.totalPages;
   }
 
   filter() {
     // Filtering
     // /api/v1/tours?duration=5
     const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    excludedFields.forEach(el => delete queryObj[el]);
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
+    excludedFields.forEach((el) => delete queryObj[el]);
 
     // Advanced Filtering
     // /api/v1/tours?duration[gte]=5
     let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt"lte|lt)\b/g, match => `$${match}`);
-
+    queryStr = queryStr.replace(/\b(gte|gt"lte|lt)\b/g, (match) => `$${match}`);
     this.query = this.query.find(JSON.parse(queryStr));
+    return this;
+  }
+
+  search() {
+    // Searching
+    // /api/v1/tours?search=The
+    if (this.queryString.search) {
+      const search = this.queryString.search;
+      var searchRegex = new RegExp(search, 'i');
+      this.query = this.query.find({ name: searchRegex }, null);
+    }
+
     return this;
   }
 
@@ -49,7 +65,7 @@ class APIFeatures {
   pagination() {
     // Pagination
     const page = parseInt(this.queryString.page) || 1;
-    const limit = parseInt(this.queryString.limit) || 100;
+    const limit = parseInt(this.queryString.limit) || 6;
     const skip = (page - 1) * limit;
 
     this.query = this.query.skip(skip).limit(limit);
