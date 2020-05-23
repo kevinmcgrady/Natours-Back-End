@@ -1,0 +1,80 @@
+style.
+    body {
+        line-height: 1.6;
+        font-weight: 300;
+        font-family: 'Lato', sans-serif;
+        color: #777;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    html {
+        font-size: 62.5%;
+        box-sizing: border-box;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .info-card {
+        background-color: #ffffff;
+        border-radius: 5px;
+        min-width: 55em;
+        padding: 3rem;
+        margin: 0 auto;
+        box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
+    }
+
+    .info-card__content{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .welcome-image {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+    }
+
+    .info-card__content h1 {
+        font-size: 3rem;
+        color: #55c57a;
+        padding-top: 3rem;
+    }
+
+    .info-card__content h2 {
+        font-size: 2rem;
+    }
+
+    .info-card__content .btn {
+        margin-top: 1em;
+    }
+
+    .btn, .btn:link, .btn:visited {
+        border-radius: 10rem;
+        text-transform: uppercase;
+        display: inline-block;
+        text-decoration: none;
+        position: relative;
+        transition: all 0.4s;
+        font-weight: 400;
+        backface-visibility: hidden;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn--small {
+        padding: 1.25rem 3rem !important;
+        font-size: 1.4rem !important;
+    }
+
+    .btn--green {
+        background-color: #55c57a;
+        color: #fff;
+    }
