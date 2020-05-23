@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const { limiter } = require('./utils/limiter');
 const compression = require('compression');
+const favicon = require('serve-favicon');
 
 const { errorHandeler } = require('./middleware/errorMiddleware');
 const AppError = require('./error/appError');
@@ -19,11 +20,10 @@ const tourRouter = require('./routes/tourRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 
-// Controllers
-const bookingController = require('./controllers/bookingController');
-
 // App.
 const app = express();
+
+app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.png')));
 
 // Allow the app to trust proxys.
 app.enable('trust proxy');
@@ -86,6 +86,10 @@ app.use((req, res, next) => {
 });
 
 // Routes.
+app.get('/', (req, res, next) => {
+  res.render('index');
+});
+
 // API routes.
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
@@ -94,7 +98,11 @@ app.use('/api/v1/bookings', bookingRouter);
 
 // Error route.
 app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl}`, 404));
+  if (req.originalUrl.startsWith('/api')) {
+    next(new AppError(`Can't find ${req.originalUrl}`, 404));
+  } else {
+    res.render('error');
+  }
 });
 
 // Global Error Handeling Middleware.
