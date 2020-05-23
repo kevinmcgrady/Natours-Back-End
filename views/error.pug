@@ -1,8 +1,14 @@
-extends base
+<!DOCTYPE html>
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Natours API
+    include style
+  body
+    .info-card
+      .info-card__content
+        <img class="welcome-image" src="https://i.imgur.com/Q2BAOd2.png" alt="Lost man with map">
+        h1 Something went wrong
+        h2 This page does not exist
 
-block content
-  main.main
-    .error
-      .error__title
-        h2.heading-secondary.heading-secondary--error Uh oh! Something went wrong!
-      .error__msg= message
