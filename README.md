@@ -1,4 +1,4 @@
-# Natours API
+# Natours API!
 
 Natours is a tour booking system, this API provides features:
 
